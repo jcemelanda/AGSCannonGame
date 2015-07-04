@@ -35,8 +35,8 @@ def create_player(name):
         'name': name,
         'action': [],
         'surface': pygame.Surface((50, 50)),
-        'position': {'x': randrange(SCREEN_SIZE[0]-50),
-                    'y': randrange(SCREEN_SIZE[1]-50)},
+        'position': {'x': randrange(SCREEN_SIZE[0])-50,
+                    'y': randrange(SCREEN_SIZE[1])-50},
         'motion': {'direction': '',
                     'distance': 0}
     }

@@ -6,9 +6,15 @@ S'name'
 p3
 S'iury'
 p4
-ssS'127.0.0.1'
+ssS'192.168.0.100'
 p5
 (dp6
 S'name'
 p7
-Nss.
+NssS'127.0.0.1'
+p8
+(dp9
+g7
+S'Julio'
+p10
+ss.
