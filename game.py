@@ -63,8 +63,9 @@ def add_players():
             return
 
 
-def create_bullet(position, direction):
+def create_bullet(ip, position, direction):
     bullet = {
+        'origin': ip,
         'surface': pygame.Surface((10, 10)),
         'position': dict(position),
     }
@@ -107,7 +108,7 @@ def goto(ip, direction, distance):
 
 
 def shoot(ip, direction):
-    create_bullet(players[ip]['position'], direction)
+    create_bullet(ip, players[ip]['position'], direction)
 
 
 def get_action():
@@ -161,7 +162,7 @@ def check_player_hit():
     for ip, player in players.items():
         r = get_rect(player)
         collided = r.collidelist(bullet_rects)
-        if collided >= 0:
+        if collided >= 0 and bullets[collided]['origin'] != ip:
             del(players[ip])
             bullets.pop(collided)
 
