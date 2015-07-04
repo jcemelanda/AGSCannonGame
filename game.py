@@ -16,41 +16,75 @@ clock = pygame.time.Clock()
 font_name = pygame.font.get_default_font()
 game_font = pygame.font.SysFont(font_name, 72)
 
-SCREEN_SIZE = (1024, 768)
+SCREEN_SIZE = (800, 600)
 screen = pygame.display.set_mode(SCREEN_SIZE, 0, 32)
 
 background = pygame.Surface(SCREEN_SIZE)
 
-players = []
+players = {}
 
 actions_file = open('actions.db', 'r')
 
-def create_player():
-    player =  {
+game_started = False
+
+bullets = []
+
+
+def create_player(name):
+    player = {
+        'name': name,
+        'action': [],
         'surface': pygame.Surface((50, 50)),
         'position': {'x': randrange(SCREEN_SIZE[0]-50),
-                    'y': randrange(SCREEN_SIZE[1]-50)}
+                    'y': randrange(SCREEN_SIZE[1]-50)},
+        'motion': {'directio': '',
+                    'distacion': 0}
     }
     player['surface'].fill(Color(randrange(110, 256),randrange(110, 256),randrange(110, 256)))
     print(player)
     return player
+
 
 def add_players():
     has_player = True
     while has_player:
         data = actions_file.readline()
         if data:
+            print(data)
             if data == 'STARTGAME\n':
                 has_player = False
+                game_started = True
                 continue
-            players.append(create_player())
-add_players()
+            _, name, ip = data.split(':')
+            players[ip] = create_player(name)
+        else:
+            return
+
+
+def create_bullet(position, direction):
+    bullet = {
+        'surface': pygame.Surface((10, 10)),
+        'position': position,
+    }
+    buller['surface'].fill(Color(255, 0, 0))
+    if direction == 0:
+        bullet['speed'] = (0, -10)
+    elif direction == 1:
+        bullet['speed'] = (10, 0)
+    elif direction == 2:
+        bullet['speed'] = (0, 10)
+    elif direction == 3:
+        bullet['speed'] = (-10, 0)
+
+    bullets.append(bullet)
+
 
 def draw():
     screen.blit(background, (0, 0))
-    for player in players:
+    for player in players.values():
         screen.blit(player['surface'], player['position'].values())
     pygame.display.update()
+
 
 def check_exit():
     for event in pygame.event.get():
@@ -58,7 +92,61 @@ def check_exit():
             exit()
 
 
+
+def process_action(data):
+    action = data.split(':')
+    players[action[1]]['action'].append('{}({})'.format(action.pop(0), ','.join(action)))
+
+
+def goto(ip, direction, distance):
+    player[ip]['motion']['distance'] = distance
+    player[ip]['motion']['direction'] = direction
+
+
+def shoot(ip, diretion):
+    create_bullet(player[ip]['position'], direction)
+
+
+def get_action():
+    data = actions_file.readline()
+    while data:
+        process_action(data)
+        data = actions_file.readline()
+
+
+def move_player(player):
+    direction = player['motion']['direction']
+    if direction == 0:
+        player['position']['y'] -= 10
+    elif direction == 1:
+        player['position']['x'] += 10
+    elif direction == 2:
+        player['position']['y'] += 10
+    elif direction == 3:
+        player['position']['x'] -= 10
+
+    player['motion']['distance'] -= 10
+
+
+def execute_actions():
+    for player in players.values:
+        if player['motion']['distance']:
+            move_player(player)
+        else:
+            action = player['action'].pop(0)
+            eval(action)
+
+
 while True:
+
     check_exit()
+
+    if not game_started:
+        add_players()
+    else:
+        get_action()
+
+    execute_actions()
+    move_lasers()
     draw()
     time_passed = clock.tick(30)
