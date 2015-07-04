@@ -5,6 +5,7 @@ import pygame
 from pygame import Color
 from pygame.locals import *
 from sys import exit
+from random import randrange
 
 pygame.init()
 pygame.font.init()
@@ -15,31 +16,34 @@ clock = pygame.time.Clock()
 font_name = pygame.font.get_default_font()
 game_font = pygame.font.SysFont(font_name, 72)
 
-screen = pygame.display.set_mode((1280, 1024), 0, 32)
+SCREEN_SIZE = (1024, 768)
+screen = pygame.display.set_mode(SCREEN_SIZE, 0, 32)
 
-background = pygame.Surface((1280, 1024))
+background = pygame.Surface(SCREEN_SIZE)
 
 players = []
 
 actions_file = open('actions.db', 'r')
 
 def create_player():
-    return {
-        'surface': pygame.Surface((50, 50)).fill(Color(randrange(255), randrange(255), randrange(255))),
-        'position': {'x': randrange(1229),
-                    'y': randrange(973)}
+    player =  {
+        'surface': pygame.Surface((50, 50)),
+        'position': {'x': randrange(SCREEN_SIZE[0]-50),
+                    'y': randrange(SCREEN_SIZE[1]-50)}
     }
+    player['surface'].fill(Color('white'))
+    print(player)
+    return player
 
 def add_players():
     has_player = True
     while has_player:
         data = actions_file.readline()
         if data:
-            if data == 'STARTGAME':
-                has_player = false
+            if data == 'STARTGAME\n':
+                has_player = False
                 continue
             players.append(create_player())
-
 add_players()
 
 def draw():
@@ -47,6 +51,14 @@ def draw():
     for player in players:
         screen.blit(player['surface'], player['position'].values())
     pygame.display.update()
-    
+
+def check_exit():
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            exit()
+
+
 while True:
+    check_exit()
+    draw()
     time_passed = clock.tick(30)
