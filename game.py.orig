@@ -16,9 +16,7 @@ clock = pygame.time.Clock()
 font_name = pygame.font.get_default_font()
 game_font = pygame.font.SysFont(font_name, 72)
 
-info_object = pygame.display.Info()
-SCREEN_SIZE = (info_object.current_w, info_object.current_h)
-
+SCREEN_SIZE = (1366, 768)
 screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN|HWSURFACE|DOUBLEBUF, 32)
 
 background = pygame.Surface(SCREEN_SIZE)
@@ -108,7 +106,11 @@ def process_action(data):
 
 
 def goto(ip, direction, distance):
+<<<<<<< Updated upstream
+    players[ip]['motion']['distance'] =  10 * distance
+=======
     players[ip]['motion']['distance'] = 50*distance
+>>>>>>> Stashed changes
     players[ip]['motion']['direction'] = direction
 
 
