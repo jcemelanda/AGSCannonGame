@@ -106,7 +106,7 @@ def process_action(data):
 
 
 def goto(ip, direction, distance):
-    players[ip]['motion']['distance'] = distance
+    players[ip]['motion']['distance'] =  10 * distance
     players[ip]['motion']['direction'] = direction
 
 
