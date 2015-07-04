@@ -31,7 +31,7 @@ def create_player():
         'position': {'x': randrange(SCREEN_SIZE[0]-50),
                     'y': randrange(SCREEN_SIZE[1]-50)}
     }
-    player['surface'].fill(Color('white'))
+    player['surface'].fill(Color(randrange(110, 256),randrange(110, 256),randrange(110, 256)))
     print(player)
     return player
 
