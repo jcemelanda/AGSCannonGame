@@ -16,7 +16,9 @@ clock = pygame.time.Clock()
 font_name = pygame.font.get_default_font()
 game_font = pygame.font.SysFont(font_name, 72)
 
-SCREEN_SIZE = (1366, 768)
+info_object = pygame.display.Info()
+SCREEN_SIZE = (info_object.current_w, info_object.current_h)
+
 screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN|HWSURFACE|DOUBLEBUF, 32)
 
 background = pygame.Surface(SCREEN_SIZE)
