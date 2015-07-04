@@ -92,6 +92,9 @@ def draw():
 
 
 def check_exit():
+    pressed_keys = pygame.key.get_pressed()
+    if pressed_keys[K_SPACE]:
+        exit()
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
@@ -171,6 +174,7 @@ def clear_lost_bullets():
     for bullet in bullets[:]:
         if bullet['position']['x'] < 0 or bullet['position']['x'] > SCREEN_SIZE[0] or bullet['position']['y'] < 0 or bullet['position']['y'] > SCREEN_SIZE[1]:
             bullets.remove(bullet)
+            del(bullet)
 
 
 while True:
