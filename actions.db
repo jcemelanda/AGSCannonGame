@@ -1,4 +1,10 @@
 add_player:127.0.0.1:Julio
-add_player:127.0.0.1:Julio
+shoot:127.0.0.1:1
+shoot:127.0.0.1:1
 add_player:127.0.0.1:Julio
 STARTGAME
+shoot:127.0.0.1:3
+shoot:127.0.0.1:2
+shoot:127.0.0.1:2
+shoot:127.0.0.1:2
+shoot:127.0.0.1:1

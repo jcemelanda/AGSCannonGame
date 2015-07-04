@@ -37,8 +37,8 @@ def create_player(name):
         'surface': pygame.Surface((50, 50)),
         'position': {'x': randrange(SCREEN_SIZE[0]-50),
                     'y': randrange(SCREEN_SIZE[1]-50)},
-        'motion': {'directio': '',
-                    'distacion': 0}
+        'motion': {'direction': '',
+                    'distance': 0}
     }
     player['surface'].fill(Color(randrange(110, 256),randrange(110, 256),randrange(110, 256)))
     print(player)
@@ -46,16 +46,18 @@ def create_player(name):
 
 
 def add_players():
+    global game_started
     has_player = True
     while has_player:
-        data = actions_file.readline()
+        data = actions_file.readline().strip()
         if data:
             print(data)
-            if data == 'STARTGAME\n':
+            if data == 'STARTGAME':
                 has_player = False
                 game_started = True
                 continue
-            _, name, ip = data.split(':')
+            print data
+            action, ip, name = data.split(':')
             players[ip] = create_player(name)
         else:
             return
@@ -64,9 +66,9 @@ def add_players():
 def create_bullet(position, direction):
     bullet = {
         'surface': pygame.Surface((10, 10)),
-        'position': position,
+        'position': dict(position),
     }
-    buller['surface'].fill(Color(255, 0, 0))
+    bullet['surface'].fill(Color(255, 0, 0))
     if direction == 0:
         bullet['speed'] = (0, -10)
     elif direction == 1:
@@ -83,6 +85,8 @@ def draw():
     screen.blit(background, (0, 0))
     for player in players.values():
         screen.blit(player['surface'], player['position'].values())
+    for bullet in bullets:
+        screen.blit(bullet['surface'], bullet['position'].values())
     pygame.display.update()
 
 
@@ -95,20 +99,20 @@ def check_exit():
 
 def process_action(data):
     action = data.split(':')
-    players[action[1]]['action'].append('{}({})'.format(action.pop(0), ','.join(action)))
+    players[action[1]]['action'].append('{}({}, {})'.format(action.pop(0), '"{}"'.format(action.pop(0)), ','.join(action)))
 
 
 def goto(ip, direction, distance):
-    player[ip]['motion']['distance'] = distance
-    player[ip]['motion']['direction'] = direction
+    players[ip]['motion']['distance'] = distance
+    players[ip]['motion']['direction'] = direction
 
 
-def shoot(ip, diretion):
-    create_bullet(player[ip]['position'], direction)
+def shoot(ip, direction):
+    create_bullet(players[ip]['position'], direction)
 
 
 def get_action():
-    data = actions_file.readline()
+    data = actions_file.readline().strip()
     while data:
         process_action(data)
         data = actions_file.readline()
@@ -129,13 +133,21 @@ def move_player(player):
 
 
 def execute_actions():
-    for player in players.values:
+    for player in players.values():
         if player['motion']['distance']:
             move_player(player)
         else:
-            action = player['action'].pop(0)
-            eval(action)
+            try:
+                action = player['action'].pop(0)
+                eval(action)
+            except:
+                pass
 
+
+def move_bullets():
+    for bullet in bullets:
+        bullet['position']['x'] += bullet['speed'][0]
+        bullet['position']['y'] += bullet['speed'][1]
 
 while True:
 
@@ -146,7 +158,7 @@ while True:
     else:
         get_action()
 
-    execute_actions()
-    move_lasers()
+        execute_actions()
+        move_bullets()
     draw()
     time_passed = clock.tick(30)
