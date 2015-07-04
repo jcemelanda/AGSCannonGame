@@ -96,7 +96,6 @@ def check_exit():
             exit()
 
 
-
 def process_action(data):
     action = data.split(':')
     players[action[1]]['action'].append('{}({}, {})'.format(action.pop(0), '"{}"'.format(action.pop(0)), ','.join(action)))
@@ -149,6 +148,30 @@ def move_bullets():
         bullet['position']['x'] += bullet['speed'][0]
         bullet['position']['y'] += bullet['speed'][1]
 
+
+def get_rect(obj):
+    return Rect(obj['position']['x'],
+                obj['position']['y'],
+                obj['surface'].get_width(),
+                obj['surface'].get_height())
+
+
+def check_player_hit():
+    bullet_rects = [get_rect(b) for b in bullets]
+    for ip, player in players.items():
+        r = get_rect(player)
+        collided = r.collidelist(bullet_rects)
+        if collided >= 0:
+            del(players[ip])
+            bullets.pop(collided)
+
+
+def clear_lost_bullets():
+    for bullet in bullets[:]:
+        if bullet['position']['x'] < 0 or bullet['position']['x'] > SCREEN_SIZE[0] or bullet['position']['y'] < 0 or bullet['position']['y'] > SCREEN_SIZE[1]:
+            bullets.remove(bullet)
+
+
 while True:
 
     check_exit()
@@ -160,5 +183,6 @@ while True:
 
         execute_actions()
         move_bullets()
+        check_player_hit()
     draw()
     time_passed = clock.tick(30)
