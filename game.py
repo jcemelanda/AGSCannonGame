@@ -19,7 +19,7 @@ game_font = pygame.font.SysFont(font_name, 72)
 info_object = pygame.display.Info()
 SCREEN_SIZE = (info_object.current_w, info_object.current_h)
 
-screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN|HWSURFACE|DOUBLEBUF, 32)
+screen = pygame.display.set_mode(SCREEN_SIZE, FULLSCREEN | HWSURFACE | DOUBLEBUF, 32)
 
 background = pygame.Surface(SCREEN_SIZE)
 
@@ -37,12 +37,18 @@ def create_player(name):
         'name': name,
         'action': [],
         'surface': pygame.Surface((50, 50)),
-        'position': {'x': randrange(SCREEN_SIZE[0])-50,
-                    'y': randrange(SCREEN_SIZE[1])-50},
-        'motion': {'direction': '',
-                    'distance': 0}
+        'position': {
+            'x': randrange(SCREEN_SIZE[0])-50,
+            'y': randrange(SCREEN_SIZE[1])-50
+        },
+        'motion': {
+            'direction': '',
+            'distance': 0
+        }
     }
-    player['surface'].fill(Color(randrange(110, 256),randrange(110, 256),randrange(110, 256)))
+
+    player['surface'].fill(Color(randrange(110, 256), randrange(110, 256), randrange(110, 256)))
+    
     print(player)
     return player
 
